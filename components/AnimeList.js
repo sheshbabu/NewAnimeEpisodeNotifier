@@ -34,7 +34,8 @@ export default class AnimeList extends React.Component {
             season: 'winter',
             status: 'currently airing',
             type: 'TV',
-            sort: 'popularity-desc'
+            sort: 'popularity-desc',
+            airing_data: 'true'
         }
         const url = 'https://anilist.co/api/browse/anime';
         const response = await fetch(url + '?' + queryString.stringify(queryParams))
@@ -57,8 +58,8 @@ export default class AnimeList extends React.Component {
             return <Text>Loading...</Text>
         }
 
-        const list = this.state.list.map((anime, index) => {
-            return <AnimeListItem name={anime.title_english} key={index}/>
+        const list = this.state.list.map(anime => {
+            return <AnimeListItem anime={anime} key={anime.id}/>
         })
         return <ScrollView>{list}</ScrollView>
     }

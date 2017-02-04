@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import moment from 'moment';
 
 const styles = StyleSheet.create({
   container: {
@@ -11,16 +12,25 @@ const styles = StyleSheet.create({
       padding: 10,
       marginBottom: 5
   },
-  text: {
+  episodeTitle: {
       color: 'black',
       fontSize: 14
+  },
+  airingText: {
+      color: 'gray',
+      fontSize: 12
   }
 });
 
-export default function AnimeListItem ({name}) {
+export default function AnimeListItem ({anime}) {
     return (
         <View style={styles.container}>
-            <Text style={styles.text}>{name}</Text>
+            <Text style={styles.episodeTitle}>{anime.title_english}</Text>
+            <Text style={styles.airingText}>{getNextAiringTime(anime.airing.time)}</Text>
         </View>
     );
+}
+
+function getNextAiringTime (time) {
+    return `Next episode ${moment(time).fromNow()} (${moment(time).format('ddd')})`
 }
