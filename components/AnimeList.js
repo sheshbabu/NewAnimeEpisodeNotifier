@@ -30,12 +30,11 @@ export default class AnimeList extends React.Component {
     async fetchBrowse ({ access_token }) {
         const queryParams = { 
             access_token,
-            year: '2017',
-            season: 'winter',
-            status: 'currently airing',
+            status: 'Currently Airing',
             type: 'TV',
             sort: 'popularity-desc',
-            airing_data: 'true'
+            airing_data: 'true',
+            full_page: 'true',
         }
         const url = 'https://anilist.co/api/browse/anime';
         const response = await fetch(url + '?' + queryString.stringify(queryParams))
@@ -58,9 +57,10 @@ export default class AnimeList extends React.Component {
             return <Text>Loading...</Text>
         }
 
-        const list = this.state.list.map(anime => {
-            return <AnimeListItem anime={anime} key={anime.id}/>
-        })
+        const list = this.state.list
+            .filter(anime => anime.airing !== null)
+            .map(anime => <AnimeListItem anime={anime} key={anime.id}/>);
+
         return <ScrollView>{list}</ScrollView>
     }
 
