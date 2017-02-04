@@ -1,16 +1,23 @@
 // @flow
 
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Image } from 'react-native';
 import moment from 'moment';
 
 const styles = StyleSheet.create({
   container: {
       borderColor: '#eee',
       borderBottomWidth: 1,
-      height: 70,
       padding: 10,
-      marginBottom: 5
+      flexDirection: 'row'
+  },
+  animeCover: {
+      resizeMode: 'contain',
+      height: 100,
+      flex: 1
+  },
+  textContent: {
+      flex: 3
   },
   episodeTitle: {
       color: 'black',
@@ -25,8 +32,11 @@ const styles = StyleSheet.create({
 export default function AnimeListItem ({anime}) {
     return (
         <View style={styles.container}>
-            <Text style={styles.episodeTitle}>{anime.title_english}</Text>
-            <Text style={styles.airingText}>{getNextAiringTime(anime.airing.time)}</Text>
+            <Image style={styles.animeCover} source={{uri: anime.image_url_lge}}/>
+            <View style={styles.textContent}>
+                <Text style={styles.episodeTitle}>{anime.title_english}</Text>
+                <Text style={styles.airingText}>{getNextAiringTime(anime.airing.time)}</Text>
+            </View>
         </View>
     );
 }
