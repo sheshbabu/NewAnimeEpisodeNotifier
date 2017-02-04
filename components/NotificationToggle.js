@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react';
-import { AsyncStorage } from 'react-native';
+import { AsyncStorage, ToastAndroid } from 'react-native';
 import { Icon } from 'react-native-elements'
 
 export default class NotificationToggle extends React.Component {
@@ -29,8 +29,10 @@ export default class NotificationToggle extends React.Component {
     async toggleNotification () {
         if (await this.isNotificationActive()) {
             await AsyncStorage.removeItem(String(this.props.anime.id));
+            ToastAndroid.show('Notification removed', ToastAndroid.SHORT);
         } else {
             await AsyncStorage.setItem(String(this.props.anime.id), 'true');
+            ToastAndroid.show('Notification added', ToastAndroid.SHORT);
         }
 
         this.setState({
