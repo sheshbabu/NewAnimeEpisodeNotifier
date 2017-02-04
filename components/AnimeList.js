@@ -32,7 +32,9 @@ export default class AnimeList extends React.Component {
             access_token,
             year: '2017',
             season: 'winter',
-            statuc: 'currently airing'
+            status: 'currently airing',
+            type: 'TV',
+            sort: 'popularity-desc'
         }
         const url = 'https://anilist.co/api/browse/anime';
         const response = await fetch(url + '?' + queryString.stringify(queryParams))
