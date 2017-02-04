@@ -12,13 +12,29 @@ export default class NotificationToggle extends React.Component {
             hasLoaded: false,
             isNotificationActive: false
         }
+        this.toggleNotification = this.toggleNotification.bind(this);
     }
 
     async componentDidMount () {
-        const value = await AsyncStorage.getItem(String(this.props.anime.id));
         this.setState({
             hasLoaded: true,
-            isNotificationActive: value === 'true'
+            isNotificationActive: await this.isNotificationActive()
+        });
+    }
+
+    async isNotificationActive () {
+        return await AsyncStorage.getItem(String(this.props.anime.id));
+    }
+
+    async toggleNotification () {
+        if (await this.isNotificationActive()) {
+            await AsyncStorage.removeItem(String(this.props.anime.id));
+        } else {
+            await AsyncStorage.setItem(String(this.props.anime.id), 'true');
+        }
+
+        this.setState({
+            isNotificationActive: await this.isNotificationActive()
         });
     }
 
@@ -28,21 +44,10 @@ export default class NotificationToggle extends React.Component {
         }
 
         if (this.state.isNotificationActive) {
-            return (
-                <Icon
-                    name='notifications-active'
-                    color='#8BC34A'
-                />
-            )
+            return <Icon name='notifications-active' color='#8BC34A' onPress={this.toggleNotification}/>
         } else {
-            return (
-                <Icon
-                    name='notifications'
-                    color='#757575'
-                />
-            )
+            return <Icon name='notifications' color='#757575' onPress={this.toggleNotification}/>
         }
-
     }
 
 }
