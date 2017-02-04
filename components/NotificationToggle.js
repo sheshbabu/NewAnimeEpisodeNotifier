@@ -2,7 +2,8 @@
 
 import React from 'react';
 import { AsyncStorage, ToastAndroid } from 'react-native';
-import { Icon } from 'react-native-elements'
+import { Icon } from 'react-native-elements';
+import PushNotification from 'react-native-push-notification';
 
 export default class NotificationToggle extends React.Component {
 
@@ -30,13 +31,30 @@ export default class NotificationToggle extends React.Component {
         if (await this.isNotificationActive()) {
             await AsyncStorage.removeItem(String(this.props.anime.id));
             ToastAndroid.show('Notification removed', ToastAndroid.SHORT);
+            this.removeNotifications();
         } else {
             await AsyncStorage.setItem(String(this.props.anime.id), 'true');
             ToastAndroid.show('Notification added', ToastAndroid.SHORT);
+            this.scheduleNotifications();
         }
 
         this.setState({
             isNotificationActive: await this.isNotificationActive()
+        });
+    }
+
+    scheduleNotifications () {
+        PushNotification.localNotificationSchedule({
+            id: String(this.props.anime.id),
+            message: `${this.props.anime.title_english} will be airing now!`,
+            date: new Date(this.props.anime.airing.time),
+            repeatType: 'week'
+        });
+    }
+
+    removeNotifications () {
+        PushNotification.cancelLocalNotifications({
+            id: String(this.props.anime.id)
         });
     }
 
