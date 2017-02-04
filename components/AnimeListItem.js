@@ -2,8 +2,8 @@
 
 import React from 'react';
 import { StyleSheet, Text, View, Image } from 'react-native';
-import { Icon } from 'react-native-elements'
 import moment from 'moment';
+import NotificationToggle from './NotificationToggle';
 
 const styles = StyleSheet.create({
   container: {
@@ -24,8 +24,6 @@ const styles = StyleSheet.create({
   },
   textContent: {
   },
-  icon: {
-  },
   episodeTitle: {
       color: 'black',
       fontSize: 14
@@ -45,7 +43,7 @@ export default function AnimeListItem ({anime}) {
                     <Text style={styles.episodeTitle}>{anime.title_english}</Text>
                     <Text style={styles.airingText}>{getNextAiringTime(anime.airing.time)}</Text>
                 </View>
-                <Icon name='notifications-active' style={styles.icon} color='#8BC34A'/>
+                <NotificationToggle anime={anime}/>
             </View>
         </View>
     );
