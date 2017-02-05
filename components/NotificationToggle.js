@@ -17,6 +17,13 @@ const styles = StyleSheet.create({
 
 export default class NotificationToggle extends React.Component {
 
+    state: {
+        hasLoaded: bool,
+        isNotificationActive: bool,
+    }
+
+    toggleNotification: Function
+
     constructor () {
         super();
         this.state = {
@@ -26,10 +33,12 @@ export default class NotificationToggle extends React.Component {
         this.toggleNotification = this.toggleNotification.bind(this);
     }
 
-    async componentDidMount () {
-        this.setState({
-            hasLoaded: true,
-            isNotificationActive: await this.isNotificationActive()
+    componentDidMount () {
+        this.isNotificationActive().then(isActive => {
+            this.setState({
+                hasLoaded: true,
+                isNotificationActive: isActive
+            });
         });
     }
 

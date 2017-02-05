@@ -18,7 +18,11 @@ const styles = StyleSheet.create({
   }
 });
 
-export default function LoadingIndicator ({ isFetchingFromServer }) {
+type Props = {
+    isFetchingFromServer: bool
+}
+
+export default function LoadingIndicator ({ isFetchingFromServer }: Props) {
     const loadingMessage = isFetchingFromServer ? 'Fetching data from server...' : 'Loading data from cache...';
     const pullToRefreshMessage = isFetchingFromServer ? '' : '(You can "Pull to Refresh" to fetch new data from server)'
     return (

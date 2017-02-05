@@ -9,6 +9,14 @@ import CONFIG from '../config';
 
 export default class AnimeList extends React.Component {
 
+    state: {
+        list: any,
+        isLoading: bool,
+        isFetchingFromServer: bool,
+    }
+
+    fetchList: Function
+
     constructor () {
         super();
         this.state = {
@@ -42,7 +50,7 @@ export default class AnimeList extends React.Component {
         });
 
         const accessToken = await this.fetchAccessToken();
-        const list = await this.fetchBrowse(accessToken);
+        const list = await this.fetchBrowse(accessToken.access_token);
         await AsyncStorage.setItem('cachedList', JSON.stringify(list));
 
         this.setState({
@@ -52,8 +60,8 @@ export default class AnimeList extends React.Component {
         });
     }
 
-    async fetchBrowse ({ access_token }) {
-        const queryParams = { 
+    async fetchBrowse (access_token: string) {
+        const queryParams = {
             access_token,
             status: 'Currently Airing',
             type: 'TV',

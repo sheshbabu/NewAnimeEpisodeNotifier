@@ -34,7 +34,11 @@ const styles = StyleSheet.create({
   }
 });
 
-export default function AnimeListItem ({anime}) {
+type Props = {
+    anime: any
+}
+
+export default function AnimeListItem ({anime}: Props) {
     return (
         <View style={styles.container}>
             <Image style={styles.animeCover} source={{uri: anime.image_url_lge}}/>
