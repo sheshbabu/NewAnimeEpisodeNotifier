@@ -1,9 +1,10 @@
 // @flow
 
 import React from 'react';
-import { ScrollView, Text, RefreshControl, AsyncStorage } from 'react-native';
+import { ScrollView, RefreshControl, AsyncStorage } from 'react-native';
 import queryString from 'query-string';
 import AnimeListItem from './AnimeListItem';
+import LoadingIndicator from './LoadingIndicator';
 import CONFIG from '../config';
 
 export default class AnimeList extends React.Component {
@@ -12,7 +13,8 @@ export default class AnimeList extends React.Component {
         super();
         this.state = {
             list: [],
-            isLoading: true
+            isLoading: true,
+            isFetchingFromServer: false
         }
         this.fetchList = this.fetchList.bind(this);
     }
@@ -35,7 +37,8 @@ export default class AnimeList extends React.Component {
 
     async fetchList () {
         this.setState({
-            isLoading: true
+            isLoading: true,
+            isFetchingFromServer: true
         });
 
         const accessToken = await this.fetchAccessToken();
@@ -44,7 +47,8 @@ export default class AnimeList extends React.Component {
 
         this.setState({
             list,
-            isLoading: false
+            isLoading: false,
+            isFetchingFromServer: false
         });
     }
 
@@ -86,7 +90,7 @@ export default class AnimeList extends React.Component {
 
     render () {
         if (this.state.isLoading) {
-            return <Text>Loading...</Text>
+            return <LoadingIndicator isFetchingFromServer={this.state.isFetchingFromServer}/>;
         }
 
         const list = this.state.list
