@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react';
-import { ScrollView, Text } from 'react-native';
+import { ScrollView, Text, RefreshControl, AsyncStorage } from 'react-native';
 import queryString from 'query-string';
 import AnimeListItem from './AnimeListItem';
 import CONFIG from '../config';
@@ -11,20 +11,41 @@ export default class AnimeList extends React.Component {
     constructor () {
         super();
         this.state = {
-            list: []
+            list: [],
+            isLoading: true
+        }
+        this.fetchList = this.fetchList.bind(this);
+    }
+
+    componentDidMount () {
+        this.loadList();
+    }
+
+    async loadList () {
+        const cachedList = await AsyncStorage.getItem('cachedList');
+        if (cachedList) {
+            this.setState({
+                list: JSON.parse(cachedList),
+                isLoading: false
+            });
+        } else {
+            this.fetchList();
         }
     }
 
-    async componentDidMount () {
-        const list = await this.fetchList();
-        this.setState({ list });
-    }
-
     async fetchList () {
-        const accessToken = await this.fetchAccessToken()
-        const browse = await this.fetchBrowse(accessToken);
+        this.setState({
+            isLoading: true
+        });
 
-        return browse;
+        const accessToken = await this.fetchAccessToken();
+        const list = await this.fetchBrowse(accessToken);
+        await AsyncStorage.setItem('cachedList', JSON.stringify(list));
+
+        this.setState({
+            list,
+            isLoading: false
+        });
     }
 
     async fetchBrowse ({ access_token }) {
@@ -52,8 +73,19 @@ export default class AnimeList extends React.Component {
         return await response.json();
     }
 
+    getRefreshControl () {
+        return (
+            <RefreshControl
+                refreshing={this.state.isLoading}
+                onRefresh={this.fetchList}
+                colors={['#009688']}
+                progressBackgroundColor="#fff"
+            />
+        );
+    }
+
     render () {
-        if (this.state.list.length === 0) {
+        if (this.state.isLoading) {
             return <Text>Loading...</Text>
         }
 
@@ -61,7 +93,11 @@ export default class AnimeList extends React.Component {
             .filter(anime => anime.airing !== null)
             .map(anime => <AnimeListItem anime={anime} key={anime.id}/>);
 
-        return <ScrollView>{list}</ScrollView>
+        return (
+            <ScrollView refreshControl={this.getRefreshControl()}>
+                {list}
+            </ScrollView>
+        )
     }
 
 }
