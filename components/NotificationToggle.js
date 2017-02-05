@@ -1,9 +1,19 @@
 // @flow
 
 import React from 'react';
-import { AsyncStorage, ToastAndroid } from 'react-native';
-import { Icon } from 'react-native-elements';
+import { AsyncStorage, ToastAndroid, Switch, View, Text, StyleSheet } from 'react-native';
 import PushNotification from 'react-native-push-notification';
+
+const styles = StyleSheet.create({
+  container: {
+      flexDirection: 'row',
+      alignItems: 'center'
+  },
+  text: {
+      color: 'gray',
+      fontSize: 12,
+  }
+});
 
 export default class NotificationToggle extends React.Component {
 
@@ -24,7 +34,8 @@ export default class NotificationToggle extends React.Component {
     }
 
     async isNotificationActive () {
-        return await AsyncStorage.getItem(String(this.props.anime.id));
+        const isActive = await AsyncStorage.getItem(String(this.props.anime.id));
+        return isActive === 'true';
     }
 
     async toggleNotification () {
@@ -63,11 +74,14 @@ export default class NotificationToggle extends React.Component {
             return null
         }
 
-        if (this.state.isNotificationActive) {
-            return <Icon name='notifications-active' color='#8BC34A' onPress={this.toggleNotification}/>
-        } else {
-            return <Icon name='notifications' color='#757575' onPress={this.toggleNotification}/>
-        }
+        const switchText = this.state.isNotificationActive ? 'Notifications On' : 'Notifications Off';
+
+        return (
+            <View style={styles.container}>
+                <Switch onValueChange={this.toggleNotification} value={this.state.isNotificationActive} />
+                <Text style={styles.text}>{switchText}</Text>
+            </View>
+        );
     }
 
 }
